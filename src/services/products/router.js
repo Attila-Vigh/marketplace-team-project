@@ -10,5 +10,9 @@ router.route( '/:productId' )
     .put   ( productsHandler.update )
     .delete( productsHandler.delete )
 
+router.route( '/:productId/Reviews' )
+    .get(productsHandler.getAllReviewsByProductId)
+
+
 export default router;
 

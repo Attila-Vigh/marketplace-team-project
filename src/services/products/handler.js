@@ -70,9 +70,21 @@ export const updateProduct = async ( req, res, next ) => {
 export const deleteProduct = async ( req, res, next ) => {
     try
     {
-    
+
         await Products.findByIdAndDelete( req.params.productId );
         res.status( 204 ).send();
+    }
+    catch ( error )
+    {
+        next( createError( 500, error.message ) );
+    }
+};
+
+export const getAllReviewsByProductId = async ( req, res, next ) => {
+    try
+    {
+
+        
     }
     catch ( error )
     {
@@ -85,7 +97,8 @@ const productHandler = {
     list: listProducts,
     single: singleProduct,
     update: updateProduct,
-    delete: deleteProduct
+    delete: deleteProduct,
+    getAllReviewsByProductId: getAllReviewsByProductId
 };
 
 export default productHandler;
