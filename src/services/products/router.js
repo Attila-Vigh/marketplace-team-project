@@ -11,3 +11,4 @@ router.route( '/:productId' )
     .delete( productsHandler.delete )
 
 export default router;
+
