@@ -1,24 +1,13 @@
-import authors from "../../tools/fs-CRUD.js";
-import createError from "http-errors";
-import path from "path";
+import createError from "http-errors"; import express from "express";
+import q2m from "query-to-mongo";
 
-const pathToFile = path.join( process.cwd(), "src/data/authors.json" );
+import Products from "../../Models/productsSchema.js";
 
-export const listAuthors = async ( req, res, next ) => {
+export const listProducts = async ( req, res, next ) => {
     try
     {
-        const authorsList = await authors.read( pathToFile );
-        if ( req.query && req.query.name )
-        {
-            const filteredAuthors = authorsList.filter( author =>
-                author.name
-                    .toLowerCase()
-                    .includes( req.query.name.toLowerCase() )
-            );
-            res.send( filteredAuthors );
-        }
-        else
-            res.send( authorsList );
+        const productsList = await Products.find( {} );
+        res.send( productsList );
     }
     catch ( error )
     {
@@ -26,12 +15,17 @@ export const listAuthors = async ( req, res, next ) => {
     }
 };
 
-export const singleAuthor = async ( req, res, next ) => {
+export const singleProduct = async ( req, res, next ) => {
     console.log( "req.params.id::: ", req.params.id );
     try
     {
-        const authorsList = await authors.single( req.params.id, pathToFile );
-        res.send( authorsList );
+        const productId = req.params.productId;
+
+        const product = await Products.findById( productId ); // similar to findOne()
+
+        product
+            ? res.send( product )
+            : next( createError( 404, `product with id ${ productId } not found!` ) );
     }
     catch ( error )
     {
@@ -39,12 +33,13 @@ export const singleAuthor = async ( req, res, next ) => {
     }
 };
 
-export const addAuthor = async ( req, res, next ) => {
+export const addProduct = async ( req, res, next ) => {
     console.log( "req.params.id::: ", req.body );
     try
     {
-        const newAuthor = await authors.new( req.body, pathToFile );
-        res.status( 201 ).send( newAuthor );
+        const newProduct = await new Products( req.body ).save();
+
+        res.status( 201 ).send( newProduct );
     }
     catch ( error )
     {
@@ -52,22 +47,31 @@ export const addAuthor = async ( req, res, next ) => {
     }
 };
 
-export const updateAuthor = async ( req, res, next ) => {
+export const updateProduct = async ( req, res, next ) => {
     try
     {
-        const updatedAuthor = await authors.update( req.params.id, req.body, pathToFile );
-        res.status( 204 ).send( updatedAuthor );
+        const productId = req.params.productId;
+
+        const updatedProduct = await Products.findByIdAndUpdate( productId, req.body, {
+            new: true,
+            runValidators: true, // returns the modified user
+        } );
+
+        if ( updatedProduct )
+            res.send( updatedProduct );
     }
+
     catch ( error )
     {
         next( createError( 500, error.message ) );
     }
 };
 
-export const deleteAuthor = async ( req, res, next ) => {
+export const deleteProduct = async ( req, res, next ) => {
     try
     {
-        await authors.delete( req.params.id, pathToFile );
+
+        await Products.findByIdAndDelete( req.params.productId );
         res.status( 204 ).send();
     }
     catch ( error )
@@ -76,13 +80,25 @@ export const deleteAuthor = async ( req, res, next ) => {
     }
 };
 
+export const getAllReviewsByProductId = async ( req, res, next ) => {
+    try
+    {
 
-const authorsHandler = {
-    add: addAuthor,
-    list: listAuthors,
-    single: singleAuthor,
-    update: updateAuthor,
-    delete: deleteAuthor
+        
+    }
+    catch ( error )
+    {
+        next( createError( 500, error.message ) );
+    }
 };
 
-export default authorsHandler;
+const productHandler = {
+    add: addProduct,
+    list: listProducts,
+    single: singleProduct,
+    update: updateProduct,
+    delete: deleteProduct,
+    getAllReviewsByProductId: getAllReviewsByProductId
+};
+
+export default productHandler;

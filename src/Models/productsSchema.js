@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
+
 import reviewsSchema from './reviewsSchema.js';
 // const reviewsSchema = new Schema(
 //     {
@@ -14,7 +15,7 @@ import reviewsSchema from './reviewsSchema.js';
 //     },
 //     {
 //         timestamps: true,
-//     }
+//     }f
 // );
 
 const productSchema = new Schema( 
@@ -25,12 +26,14 @@ const productSchema = new Schema(
         imageUrl   : { type: String, required: true },
         category   : { type: String, required: true },
         price      : { type: Number, required: true },
-        
-        reviews: [ { type: Schema.Types.ObjectId, ref: "Review"   }],
+
+        // reviews: [ { type: Schema.Types.ObjectId, ref: "Products" }],
+
     },
     {
         timestamps: true,
     } 
 );
 
-export default model( 'Product', productSchema );
+export default model( 'Products', productSchema );
+

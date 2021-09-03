@@ -1,22 +1,18 @@
 import { Router } from "express";
-import reviewHandler from "./handler.js";
-import ReviewHandler from "../reviews/handler.js";
-const route = Router();
+import productsHandler from "./handler.js";
+const router = Router();
+router.route( '/')
+    .get ( productsHandler.list )
+    .post( productsHandler.add  )
 
-route.get   ('/', reviewHandler.getAll   )
-route.post  ('/', reviewHandler.add    )
-// route.get   ('/:id', reviewHandler.single )
-// route.put   ('/:id', reviewHandler.update )
-// route.delete('/:id', reviewHandler.delete )
+router.route( '/:productId' )
+    .get   ( productsHandler.single )
+    .put   ( productsHandler.update )
+    .delete( productsHandler.delete )
 
-
-// route.get('/reviews' , ReviewHandler.getAll )
-// route.post('/reviews' , ReviewHandler.add)
-// route.get('/reviews/:id' , ReviewHandler.findById)
-// route.put('/reviews/:id' , ReviewHandler.findById)
-// route.delete('/reviews/:id' , ReviewHandler.findById)
+router.route( '/:productId/Reviews' )
+    .get(productsHandler.getAllReviewsByProductId)
 
 
+export default router;
 
-
-export default route;
